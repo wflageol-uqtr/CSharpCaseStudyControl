@@ -1,6 +1,6 @@
 # Case Study on Immutable Features in C#
 
-This document contains the instructions for participation in a case study on C# immutability features. Following is the specitications for the program to be completed.
+This document contains the instructions for participation in a case study on C# immutability features. Following is the specifications for the program to be completed.
 
 If you are part of the treatment (new features) group, please also read the immutability features instructions.
 
