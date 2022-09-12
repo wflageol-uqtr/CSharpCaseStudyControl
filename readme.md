@@ -58,3 +58,28 @@ Your file system should support an Undo operation which is used to walk back any
 ### TestDuplicate
 
 The final features your system should support is duplication. Given a root component, the Duplicate method should create a complete duplication of the child hierarchy of that component (including the component itself). Each new component created this way should be a copy of the original components, but should be distinct objects.
+
+## Additional Notes
+
+Here are some notes and features that may be useful for developping the project.
+
+### Multiple Values Return
+
+In some cases, more frequently in functional programming, you may wish to have a single function return multiple values. For instance, you may want to return a newly created element in a hierarchy, as well as the new hierarchy created by adding that element with Record Updating. In C#, you can do this by using the Tuples syntax:
+
+    (int, string) MakeTuple()
+    {
+        return (42, "Content");
+    }
+    
+    // ...
+    
+    (int, string) tuple = MakeTuple();
+    // Use tuple.Item1 and tuple.Item2 to access the values.
+    
+    // or alternatively
+    
+    (int i, string s) = MakeTuple();
+    // Use i and s as normal variables.
+    
+You can find more information on tuple types here: https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-tuples
