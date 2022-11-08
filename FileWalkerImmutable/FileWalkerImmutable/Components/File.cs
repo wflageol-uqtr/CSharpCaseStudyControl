@@ -6,8 +6,24 @@ using System.Threading.Tasks;
 
 namespace FileWalkerImmutable
 {
-    record File(string Name, Guid ID, int Size, string Content) : IFile
+    class File : IFile
     {
-        public File(string name, int size, string content) : this(name, Guid.NewGuid(), size, content) { }
+        public string Name { get; }
+        public Guid ID { get; }
+        public int Size { get; }
+        public string Content { get; }
+
+        public File(string name, int size, string content, Guid? id = null)
+        {
+            Name = name;
+            ID = id ?? Guid.NewGuid();
+            Size = size;
+            Content = content;
+        }
+
+        public IComponent Rename(string newName)
+        {
+            return new File(newName, Size, Content, ID);
+        }
     }
 }

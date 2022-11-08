@@ -6,8 +6,20 @@ using System.Threading.Tasks;
 
 namespace FileWalkerImmutable
 {
-    record Folder(string Name, Guid ID) : IFolder
+    class Folder : IFolder
     {
-        public Folder(string name) : this(name, Guid.NewGuid()) { }
+        public string Name { get; }
+        public Guid ID { get; }
+
+        public Folder(string name, Guid? id = null)
+        {
+            Name = name;
+            ID = id ?? Guid.NewGuid();
+        }
+
+        public IComponent Rename(string newName)
+        {
+            return new Folder(newName, ID);
+        }
     }
 }

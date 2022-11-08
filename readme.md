@@ -1,6 +1,6 @@
 # Case Study on Immutable Features in C#
 
-This document contains the instructions for participation in a case study on C# immutability features. These instructions are for the treatment group of the experiment.
+This document contains the instructions for participation in a case study on C# immutability features. These instructions are for the control group of the experiment.
 
 Following is the specifications for the program to be completed.
 
@@ -55,11 +55,5 @@ The file system should support an Undo operation which is used to walk back any 
 ### TestDuplicate
 
 The file system should support duplication. Given a root component, the Duplicate method should create a complete duplicate of the child hierarchy of that component (including the component itself). Each new component created this way should be a copy of the original components, but should be distinct objects. *You need to implement this functinality.*
-
-## Language Features
-
-The objective of this study is to measure the impact of a specific set of language features on immutable object-oriented software. As such, you should read the [immutability features instructions](https://github.com/wflageol-uqtr/CSharpCaseStudy/blob/main/immutability-features.md).
-
-The instructions describe the set of features which you should use to help complete your implementation of the new functionality. The existing code already makes use of these features.
 
 

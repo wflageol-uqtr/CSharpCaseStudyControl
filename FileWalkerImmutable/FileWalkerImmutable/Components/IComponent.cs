@@ -10,5 +10,7 @@ namespace FileWalkerImmutable
     {
         string Name { get; }
         Guid ID { get; }
+
+        IComponent Rename(string newName);
     }
 }

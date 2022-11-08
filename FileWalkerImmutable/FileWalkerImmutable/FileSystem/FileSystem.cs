@@ -7,13 +7,28 @@ using System.Threading.Tasks;
 
 namespace FileWalkerImmutable
 {
-    record FileSystem(ImmutableDictionary<Guid, ImmutableList<IComponent>> Map,
-        ImmutableDictionary<Guid, ImmutableList<IComponentObserver>> Observers)
+    class FileSystem
     {
-        public FileSystem() : this(
-            ImmutableDictionary<Guid, ImmutableList<IComponent>>.Empty,
-            ImmutableDictionary<Guid, ImmutableList<IComponentObserver>>.Empty)
-        { }
+        private ImmutableDictionary<Guid, ImmutableList<IComponent>> Map { get; }
+        private ImmutableDictionary<Guid, ImmutableList<IComponentObserver>> Observers { get; }
+
+        public FileSystem() 
+        {
+            Map = ImmutableDictionary<Guid, ImmutableList<IComponent>>.Empty;
+            Observers = ImmutableDictionary<Guid, ImmutableList<IComponentObserver>>.Empty;
+        }
+
+        public FileSystem(FileSystem previous, ImmutableDictionary<Guid, ImmutableList<IComponent>> map)
+        {
+            Map = map;
+            Observers = previous.Observers;
+        }
+
+        public FileSystem(FileSystem previous, ImmutableDictionary<Guid, ImmutableList<IComponentObserver>> observers)
+        {
+            Map = previous.Map;
+            Observers = observers;
+        }
 
         private void NotifyChange(IComponent before, IComponent after)
         {
@@ -42,7 +57,7 @@ namespace FileWalkerImmutable
             };
 
             var newMap = Map.SetItem(parent.ID, newChildren);
-            return this with { Map = newMap };
+            return new FileSystem(this, newMap);
         }
 
         public FileSystem AddList(IComponent parent, IEnumerable<IComponent> children)
@@ -73,7 +88,7 @@ namespace FileWalkerImmutable
                     builder[kvp.Key] = kvp.Value.Remove(component);
             }
 
-            return fs with { Map = builder.ToImmutable() };
+            return new FileSystem(fs, builder.ToImmutable());
         }
 
         public FileSystem Replace(IComponent oldComponent, IComponent newComponent)
@@ -94,17 +109,12 @@ namespace FileWalkerImmutable
                     builder[kvp.Key] = kvp.Value.Replace(oldComponent, newComponent);
             }
 
-            return this with { Map = builder.ToImmutable() };
+            return new FileSystem(this, builder.ToImmutable());
         }
 
         public FileSystem Rename(IComponent component, string newName)
         {
-            IComponent newComp = component switch
-            {
-                File file => file with { Name = newName },
-                Folder folder => folder with { Name = newName },
-                _ => throw new ArgumentException("Argument component is not a .")
-            };
+            var newComp = component.Rename(newName);
 
             return Replace(component, newComp);
         }
@@ -118,28 +128,24 @@ namespace FileWalkerImmutable
         {
             // Add the observer to the parent's observer list if it has one, otherwise create a new observer list.
             Observers.TryGetValue(component.ID, out var value);
-            var newObserverList = value switch
-            {
-                null => ImmutableList.Create(observer),
-                var observers => observers.Add(observer)
-            };
+            var newObserverList = value == null
+                ? ImmutableList.Create(observer)
+                : value.Add(observer);
 
             var newObservers = Observers.SetItem(component.ID, newObserverList);
-            return this with { Observers = newObservers };
+            return new FileSystem(this, newObservers);
         }
 
         public FileSystem Detach(IComponent component, IComponentObserver observer)
         {
             // Remove the observer from the parent's observer list if it exists, or throw an exception otherwise.
             Observers.TryGetValue(component.ID, out var value);
-            var newObserverList = value switch
-            {
-                null => throw new ArgumentException("Observer does not exist in component."),
-                var observers => observers.Remove(observer)
-            };
+            if (value == null)
+                throw new ArgumentException("Observer does not exist in component.");
 
+            var newObserverList = value.Remove(observer);
             var newObservers = Observers.SetItem(component.ID, newObserverList);
-            return this with { Observers = newObservers };
+            return new FileSystem(this, newObservers);
         }
     }
 }
