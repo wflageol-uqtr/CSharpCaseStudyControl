@@ -8,41 +8,50 @@ namespace FileWalkerImmutable
 {
     public class FileSystemFacade
     {
+        private FileSystem currentFileSystem = new FileSystem();
+
         public Stack<string> NotificationLog { get; } = new();
 
         public IComponent CreateFolder(string name)
         {
-            throw new NotImplementedException();
+            return new Folder(name);
         }
 
         public IComponent CreateFile(string name, int size, string content)
         {
-            throw new NotImplementedException();
+            return new File(name, size, content);
         }
 
         public void AddChildren(IComponent root, params IComponent[] children)
         {
-            throw new NotImplementedException();
+            currentFileSystem = currentFileSystem.AddList(root, children);
         }
 
         public IComponent GetComponentByPath(IComponent root, params string[] componentNames)
         {
-            throw new NotImplementedException();
+            var currentComponent = root;
+            foreach(string name in componentNames)
+            {
+                var children = currentFileSystem.Children(currentComponent);
+                currentComponent = children.FirstOrDefault(c => c.Name == name);
+            }
+
+            return currentComponent;
         }
 
         public void Rename(IComponent component, string newName)
         {
-            throw new NotImplementedException();
+            currentFileSystem = currentFileSystem.Rename(component, newName);
         }
 
         public void NotifyOnChange(IComponent component)
         {
-            throw new NotImplementedException();
+            currentFileSystem = currentFileSystem.Attach(component, new FacadeNotificationObserver(this));
         }
 
         public void Delete(IComponent component)
         {
-            throw new NotImplementedException();
+            currentFileSystem = currentFileSystem.Delete(component);
         }
 
         public IEnumerable<IComponent> Collect(IComponent sourceComponent, bool includeFiles, bool includeFolders, bool recursive)

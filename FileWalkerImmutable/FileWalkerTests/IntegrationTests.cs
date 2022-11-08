@@ -100,8 +100,8 @@ namespace FileWalkerTests
             facade.Delete(folder);
 
             // Check that both nofications were logged.
-            Assert.AreEqual(facade.NotificationLog.Pop(), "Folder1 was deleted.");
             Assert.AreEqual(facade.NotificationLog.Pop(), "File2 was deleted.");
+            Assert.AreEqual(facade.NotificationLog.Pop(), "Folder1 was deleted.");
         }
 
         [TestMethod]

@@ -81,3 +81,24 @@ If you need to write multiple statements in a switch-like environment, you can u
 It is also possible to combine Pattern Matching and Record Types for more advanced techniques. We will not be covering those here and you are not required to use these advanced techniques in the experiment.
 
 You can find more information about Pattern Matching here: https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/functional/pattern-matching
+
+### Multiple Values Return
+
+In some cases, more frequently in functional programming, you may wish to have a single function return multiple values. For instance, you may want to return a newly created element in a hierarchy, as well as the new hierarchy created by adding that element with Record Updating. In C#, you can do this by using the Tuples syntax:
+
+    (int, string) MakeTuple()
+    {
+        return (42, "Content");
+    }
+    
+    // ...
+    
+    (int, string) tuple = MakeTuple();
+    // Use tuple.Item1 and tuple.Item2 to access the values.
+    
+    // or alternatively
+    
+    (int i, string s) = MakeTuple();
+    // Use i and s as normal variables.
+    
+You can find more information on tuple types here: https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-tuples

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace FileWalkerImmutable
 {
-    public interface IComponent
+    public interface IComponentObserver
     {
-        string Name { get; }
-        Guid ID { get; }
+        public void Notify(IComponent before, IComponent after);
     }
 }
